@@ -1,0 +1,22 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Add task</title>
+</head>
+
+<body>
+    {% block title %}Add task{% endblock %}
+
+    {% block content %}
+        <form method="POST" class="add-task">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit" class="btn btn-success">Register</button>
+        </form>
+    {% endblock %}
+    </body>
+
+</html>
