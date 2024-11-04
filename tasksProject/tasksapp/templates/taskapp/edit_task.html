@@ -1,0 +1,5 @@
+<form method="POST" class="add-task">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit" class="btn btn-success">Update</button>
+</form>

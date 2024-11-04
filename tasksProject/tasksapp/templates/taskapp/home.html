@@ -29,7 +29,7 @@
                 <td>{{task.status}}</td>
                 <td>{{task.deadline}}</td>
                 <td>
-                    <button>Edit</button>
+                    <a href="{% url 'update-task' task.id %}"><button>Edit</button></a>
                     <a href="{% url 'delete-task' task.id %}"
                         onclick="return confirm('Are you sure you want to delete this task?');">
                         <button type="button">Delete</button>

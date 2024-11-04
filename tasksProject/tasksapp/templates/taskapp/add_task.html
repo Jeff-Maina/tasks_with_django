@@ -1,22 +1,30 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>Add task</title>
+    <title>{% if form.instance.pk %} Update task {% else %} Add new task {% endif %}
+    </title>
 </head>
 
 <body>
-    {% block title %}Add task{% endblock %}
+    {% block title %}
+    <h1>
+        {% if form.instance.pk %} Update task {% else %} Add new task {% endif %}
+    </h1>
+    {% endblock %}
 
     {% block content %}
-        <form method="POST" class="add-task">
+    <form method="POST" class="add-task">
         {% csrf_token %}
         {{ form }}
-        <button type="submit" class="btn btn-success">Register</button>
-        </form>
+        <button type="submit" class="btn btn-success">{% if form.instance.pk %}Update task{% else %} Add new
+            task {% endif %}</button>
+    </form>
+
+
+    <a href="{% url 'home' %}">Back home</a>
+
     {% endblock %}
-    </body>
+</body>
 
 </html>

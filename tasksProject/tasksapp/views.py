@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.http import HttpResponse
 from .models import Task
 
-from .form import AddTaskForm
+from .form import TaskForm
 
 # Create your views here.
 
@@ -15,12 +15,12 @@ def home_view(request):
 
 def add_task_view(request):
     if request.method == 'POST':
-        form = AddTaskForm(request.POST)
+        form = TaskForm(request.POST)
         if form.is_valid():
             form.add_task()
             return redirect("home")
     else:
-        form = AddTaskForm()
+        form = TaskForm()
     context = {'form': form}
     return render(request, 'taskapp/add_task.html', context)
 
@@ -29,3 +29,17 @@ def deleteTask(request, id):
     task = get_object_or_404(Task, id=id)
     task.delete()
     return redirect("home")
+
+
+def updateTask(request, id):
+    task = get_object_or_404(Task, id=id)
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect("home")
+    else:
+        form = TaskForm(instance=task)
+    context = {'form': form}
+    return render(request, 'taskapp/add_task.html', context)
+
