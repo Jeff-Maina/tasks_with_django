@@ -8,6 +8,12 @@
 <body>
 
     <h1>Tasks</h1>
+    <nav>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </nav>
 
     <table border="1">
         <thead>
