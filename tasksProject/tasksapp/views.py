@@ -31,20 +31,22 @@ def register_view(request):
 def login_view(request):
     error_message = None
     if request.method == "POST":
-        email = request.POST.get("email")
+        
+        username = request.POST.get("username")
         password = request.POST.get("password")
-        user = authenticate(request, email=email, password=password)
+        user = authenticate(request, username=username, password=password)
+
         if user is not None:
             login(request, user)
             next_url = request.POST.get(
                 'next') or request.GET.get('next') or 'home'
             return redirect(next_url)
         else:
-            if User.objects.filter(email=email).exists():
+            if User.objects.filter(username=username).exists():
                 error_message = "Incorrect credentials. Please try again."
             else:
-                error_message = "No account found with that email. Please register."
-    
+                error_message = "No account found with that username. Please register."
+
     return render(request, 'accounts/login.html', {'error': error_message})
 
 
@@ -58,7 +60,7 @@ def logout_view(request):
 
 @login_required
 def home_view(request):
-    tasks = Task.objects.all()
+    tasks = Task.objects.filter(user=request.user)
     return render(request, 'taskapp/home.html', {'tasks': tasks})
 
 
@@ -67,6 +69,8 @@ def add_task_view(request):
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
+            task = form.save(commit=False)
+            task.user = request.user
             form.add_task()
             return redirect("home")
     else:
@@ -77,7 +81,10 @@ def add_task_view(request):
 
 @login_required
 def deleteTask(request, id):
+
     task = get_object_or_404(Task, id=id)
+    if task.user != request.user:
+        return redirect("home")
     task.delete()
     return redirect("home")
 
@@ -85,6 +92,10 @@ def deleteTask(request, id):
 @login_required
 def updateTask(request, id):
     task = get_object_or_404(Task, id=id)
+
+    if task.user != request.user:
+        return redirect("home")
+
     if request.method == 'POST':
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
