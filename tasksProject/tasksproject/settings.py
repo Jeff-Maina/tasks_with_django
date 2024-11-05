@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "tasksapp.apps.TasksappConfig"
 ]
 
+
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -70,6 +72,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "tasksproject.wsgi.application"
 
+AUTHENTICATION_BACKENDS = [
+    'tasksapp.auth_backends.EmailBackend',  # Replace 'yourapp' with your actual app name
+]
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -100,6 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'tasksapp.CustomUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/

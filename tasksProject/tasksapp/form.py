@@ -1,6 +1,5 @@
 from django import forms
-from .models import Task
-from django.contrib.auth.models import User
+from .models import Task, CustomUser
 
 PRIORITY_CHOICES = [
     ("high", "High"),
@@ -38,14 +37,14 @@ class RegisterForm(forms.ModelForm):
         widget=forms.PasswordInput, label="Confirm Password")
 
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password', 'password_confirm']
+        model = CustomUser
+        fields = ['email', 'country', 'username']
 
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
         password_confirm = cleaned_data.get("password_confirm")
-        
+
         if password and password_confirm and password != password_confirm:
             raise forms.ValidationError("Passwords do not match!")
-        return cleaned_data      
+        return cleaned_data

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .models import Task
+from .models import Task, CustomUser
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -19,8 +19,9 @@ def register_view(request):
             email = form.cleaned_data.get("email")
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
-            user = User.objects.create_user(
-                username=username, email=email, password=password)
+            country = form.cleaned_data.get("country")
+            user = CustomUser.objects.create_user(
+                username=username, email=email, password=password, country=country)
             login(request, user)
             return redirect('home')
     else:
@@ -31,10 +32,10 @@ def register_view(request):
 def login_view(request):
     error_message = None
     if request.method == "POST":
-        
-        username = request.POST.get("username")
+
+        email = request.POST.get("email")
         password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, email=email, password=password)
 
         if user is not None:
             login(request, user)
@@ -42,10 +43,11 @@ def login_view(request):
                 'next') or request.GET.get('next') or 'home'
             return redirect(next_url)
         else:
-            if User.objects.filter(username=username).exists():
+            if CustomUser.objects.filter(email=email).exists():
+                print(f"{email,password}")
                 error_message = "Incorrect credentials. Please try again."
             else:
-                error_message = "No account found with that username. Please register."
+                error_message = "No account found with that email. Please register."
 
     return render(request, 'accounts/login.html', {'error': error_message})
 
